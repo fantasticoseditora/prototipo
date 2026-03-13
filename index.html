@@ -19,7 +19,7 @@
             touch-action: none; 
         }
 
-        /* --- CONTÊINER PRINCIPAL (Desktop) --- */
+        /* --- CONTÊINER PRINCIPAL --- */
         #game-container {
             width: 80%;
             max-width: 1024px;
@@ -35,6 +35,29 @@
             overflow: hidden;
         }
 
+        /* --- TELA DE INÍCIO (Para liberar o áudio) --- */
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #start-screen h1 {
+            color: #d4af37;
+            text-shadow: 2px 2px 4px #000;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         /* --- IMAGEM DE FUNDO --- */
         #scene-container {
             flex-grow: 1;
@@ -47,18 +70,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            opacity: 0; /* Inicia invisível para o fade-in */
+            opacity: 0; 
             transition: opacity 0.5s ease-in-out;
             display: block;
         }
 
-        .fade-in {
-            opacity: 1 !important;
-        }
-        
-        .fade-out {
-            opacity: 0 !important;
-        }
+        .fade-in { opacity: 1 !important; }
+        .fade-out { opacity: 0 !important; }
 
         /* --- BARRA DE STATUS (HP/MP) --- */
         #stats-bar {
@@ -170,28 +188,12 @@
                 border: none; 
                 border-radius: 0; 
             }
-            
-            #dialogue-container { 
-                bottom: 10px;
-                width: 95%;
-                padding: 20px 15px 15px 15px; 
-                height: auto; 
-            }
-            
-            #speaker-name { 
-                font-size: 1rem; 
-                top: -15px; 
-                left: 15px; 
-            }
-            
-            #dialogue-text { 
-                font-size: 1rem; 
-                line-height: 1.4; 
-            }
-            
+            #start-screen h1 { font-size: 1.8rem; padding: 0 20px; }
+            #dialogue-container { bottom: 10px; width: 95%; padding: 20px 15px 15px 15px; height: auto; }
+            #speaker-name { font-size: 1rem; top: -15px; left: 15px; }
+            #dialogue-text { font-size: 1rem; line-height: 1.4; }
             .option-btn { font-size: 1rem; padding: 15px; margin-bottom: 5px; }
             #options-container { width: 90%; top: 40%; }
-            
             #stats-bar { font-size: 0.9rem; padding: 5px 10px; top: 10px; left: 10px; gap: 10px;}
         }
 
@@ -204,7 +206,12 @@
 
 <div id="game-container">
     
-    <div id="stats-bar">
+    <div id="start-screen">
+        <h1>O Selo de Elara</h1>
+        <button class="option-btn" id="start-btn">Iniciar Aventura</button>
+    </div>
+
+    <div id="stats-bar" class="hidden">
         <span>❤️ HP: <span id="hp" class="stat-value">100</span></span>
         <span>✨ MP: <span id="mp" class="stat-value">100</span></span>
     </div>
@@ -220,10 +227,14 @@
         <div id="dialogue-text"></div>
     </div>
 
+    <audio id="bgm-player" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
 </div>
 
 <script>
-    // --- 0. Pré-carregamento de Imagens (Preloading) ---
+    // --- 0. Pré-carregamento de Imagens ---
     const imagesToPreload = [
         "image_11.png",
         "bg_elara_victory_clean.png",
@@ -232,30 +243,22 @@
     ];
 
     function preloadImages(array) {
-        if (!preloadImages.list) {
-            preloadImages.list = [];
-        }
+        if (!preloadImages.list) preloadImages.list = [];
         const list = preloadImages.list;
         for (let i = 0; i < array.length; i++) {
             const img = new Image();
-            img.onload = function() {
-                const index = list.indexOf(this);
-                if (index !== -1) {
-                    list.splice(index, 1);
-                }
-            }
             list.push(img);
             img.src = array[i];
         }
     }
-
     preloadImages(imagesToPreload);
 
-    // --- 1. Estado do Jogo (Variáveis) ---
+    // --- 1. Estado do Jogo ---
     let playerHP = 100;
     let playerMP = 100;
+    const bgmPlayer = document.getElementById('bgm-player');
 
-    // --- 2. Dados das Cenas (O "Roteiro") ---
+    // --- 2. Dados das Cenas ---
     const storyData = {
         start: {
             speaker: "O GUARDIÃO",
@@ -287,19 +290,28 @@
         }
     };
 
-    // --- 3. Lógica do Jogo (Funções) ---
+    // --- 3. Lógica do Jogo ---
+
+    // Ação do Botão "Iniciar Aventura"
+    document.getElementById('start-btn').addEventListener('click', () => {
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('stats-bar').classList.remove('hidden');
+        
+        // Tenta tocar a música (o .catch previne erros no console caso o navegador ainda bloqueie)
+        bgmPlayer.play().catch(error => console.log("Áudio bloqueado pelo navegador:", error));
+        
+        resetGame();
+    });
 
     function resetGame() {
         playerHP = 100;
         playerMP = 100;
-        
         document.getElementById('hp').innerText = playerHP;
         document.getElementById('mp').innerText = playerMP;
         
         document.getElementById('options-container').classList.add('hidden');
         document.getElementById('dialogue-container').classList.add('hidden');
         
-        // Vai direto para o início
         renderScene('start');
     }
 
@@ -320,33 +332,26 @@
         const dialogueBox = document.getElementById('dialogue-container');
         const optContainer = document.getElementById('options-container');
         
-        // Oculta opções e diálogo durante a transição
         dialogueBox.classList.add('hidden');
         optContainer.classList.add('hidden');
         
-        // Inicia o fade out da imagem
         bgElement.classList.remove('fade-in');
         bgElement.classList.add('fade-out');
         
         setTimeout(() => {
-            // Troca a imagem
             if (scene.bgImage) {
                 bgElement.src = scene.bgImage;
             }
             
-            // Inicia o fade in da imagem
             bgElement.classList.remove('fade-out');
             bgElement.classList.add('fade-in');
 
-            // Atualiza os textos
             document.getElementById('speaker-name').innerText = scene.speaker;
             document.getElementById('dialogue-text').innerText = scene.text;
 
-            // Configura os botões
             optContainer.innerHTML = ''; 
 
             if (scene.options.length > 0) {
-                // Cena de escolha (mostra opções, esconde diálogo)
                 scene.options.forEach(opt => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
@@ -356,7 +361,6 @@
                 });
                 optContainer.classList.remove('hidden'); 
             } else {
-                // Tela final (mostra diálogo e botão de recomeçar)
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = "Fim do Protótipo - Jogar Novamente";
@@ -366,13 +370,8 @@
                 optContainer.classList.remove('hidden');
                 dialogueBox.classList.remove('hidden');
             }
-        }, 500); // Espera o fade-out terminar
+        }, 500);
     }
-
-    // --- 4. Iniciar Jogo ---
-    window.onload = () => {
-        resetGame();
-    };
 </script>
 
 </body>
