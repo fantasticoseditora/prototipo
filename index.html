@@ -1,242 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fantásticos Games - O Selo de Elara (Mobile Ready)</title>
-    <style>
-        /* --- ESTILOS GERAIS --- */
-        body {
-            background-color: #0d0d1a;
-            color: #e0e0e0;
-            font-family: 'Georgia', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden; 
-            touch-action: none; 
-        }
-
-        /* --- CONTÊINER PRINCIPAL (Desktop) --- */
-        #game-container {
-            width: 80%;
-            max-width: 1024px;
-            height: 80vh;
-            max-height: 768px;
-            background-color: #000;
-            border: 4px solid #333;
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* --- IMAGEM DE FUNDO --- */
-        #scene-container {
-            flex-grow: 1;
-            position: relative;
-            overflow: hidden;
-            background-color: #000; /* Fundo preto por trás da imagem */
-        }
-
-        #background {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            /* MUDANÇA: Começa com opacidade 0 para não piscar no início */
-            opacity: 0; 
-            transition: opacity 0.5s ease-in-out;
-            display: block;
-        }
-
-        /* Classe para mostrar a imagem suavemente */
-        .fade-in {
-            opacity: 1 !important;
-        }
-        
-        /* Classe para esconder a imagem suavemente */
-        .fade-out {
-            opacity: 0 !important;
-        }
-
-        /* --- BARRA DE STATUS (HP/MP) --- */
-        #stats-bar {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(10, 10, 15, 0.85);
-            padding: 8px 15px;
-            border-radius: 6px;
-            border: 1px solid #c9a55c;
-            font-size: 1.1rem;
-            z-index: 10;
-            display: flex;
-            gap: 20px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-        }
-        .stat-value { font-weight: bold; color: #fff; }
-
-        /* --- BOTÕES DE ESCOLHA --- */
-        #options-container {
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 80%;
-            max-width: 450px;
-            z-index: 20;
-        }
-
-        .option-btn {
-            background: rgba(25, 25, 35, 0.95);
-            color: #d4af37;
-            border: 2px solid #8b7355;
-            padding: 15px 20px;
-            cursor: pointer;
-            font-family: 'Georgia', serif;
-            font-size: 1.1rem;
-            text-align: center;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            text-shadow: 1px 1px 2px #000;
-            touch-action: manipulation; 
-        }
-
-        .option-btn:hover, .option-btn:active {
-            background: #d4af37;
-            color: #1a1a1a;
-            border-color: #f0e6d2;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-            text-shadow: none;
-        }
-
-        /* --- CAIXA DE DIÁLOGO --- */
-        #dialogue-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            background: rgba(15, 15, 25, 0.85);
-            border: 3px solid #c9a55c;
-            border-radius: 10px;
-            padding: 30px;
-            box-sizing: border-box;
-            height: auto; 
-            z-index: 5;
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-        }
-
-        #speaker-name {
-            position: absolute;
-            top: -20px;
-            left: 30px;
-            background: #8b7355;
-            color: #f0e6d2;
-            padding: 4px 20px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-radius: 4px;
-            border: 2px solid #5c4b37;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        #dialogue-text {
-            font-size: 1.3rem;
-            line-height: 1.5;
-            color: #e8e8e8;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        .hidden { display: none !important; }
-
-        /* ========================================= */
-        /* AJUSTES MÁGICOS PARA O CELULAR (MOBILE)  */
-        /* ========================================= */
-        @media (max-width: 768px) {
-            #game-container { 
-                width: 100vw; 
-                height: 100vh; 
-                max-width: none;
-                max-height: none;
-                border: none; 
-                border-radius: 0; 
-            }
-            
-            #dialogue-container { 
-                bottom: 10px;
-                width: 95%;
-                padding: 20px 15px 15px 15px; 
-                height: auto; 
-            }
-            
-            #speaker-name { 
-                font-size: 1rem; 
-                top: -15px; 
-                left: 15px; 
-            }
-            
-            #dialogue-text { 
-                font-size: 1rem; 
-                line-height: 1.4; 
-            }
-            
-            .option-btn { font-size: 1rem; padding: 15px; margin-bottom: 5px; }
-            #options-container { width: 90%; top: 40%; }
-            
-            #stats-bar { font-size: 0.9rem; padding: 5px 10px; top: 10px; left: 10px; gap: 10px;}
-        }
-
-        @media (max-width: 375px) {
-             #dialogue-text { font-size: 0.9rem; }
-        }
-    </style>
-</head>
-<body>
-
-<div id="game-container">
-    
-    <div id="stats-bar">
-        <span>❤️ HP: <span id="hp" class="stat-value">100</span></span>
-        <span>✨ MP: <span id="mp" class="stat-value">100</span></span>
-    </div>
-    
-    <div id="scene-container">
-        <img id="background" src="" alt="Cenário">
-    </div>
-    
-    <div id="options-container" class="hidden"></div>
-
-    <div id="dialogue-container" class="hidden">
-        <div id="speaker-name">ELARA</div>
-        <div id="dialogue-text"></div>
-    </div>
-
-</div>
-
 <script>
-    // --- Lógica do Jogo ---
+    // --- 0. Pré-carregamento de Imagens (Preloading) ---
+    // Coloque aqui o nome exato de todas as imagens que o jogo vai usar
+    const imagesToPreload = [
+        "image_11.png",
+        "bg_elara_victory_clean.png",
+        "bg_elara_capture_clean.png",
+        "bg_elara_retreat_clean.png"
+    ];
+
+    // Essa função carrega as imagens na memória do navegador em segundo plano
+    function preloadImages(array) {
+        if (!preloadImages.list) {
+            preloadImages.list = [];
+        }
+        const list = preloadImages.list;
+        for (let i = 0; i < array.length; i++) {
+            const img = new Image();
+            img.onload = function() {
+                const index = list.indexOf(this);
+                if (index !== -1) {
+                    // Remove da lista quando carregar (opcional, para limpeza)
+                    list.splice(index, 1);
+                }
+            }
+            list.push(img);
+            img.src = array[i];
+        }
+    }
+
+    // Inicia o pré-carregamento assim que o script é lido
+    preloadImages(imagesToPreload);
+
+    // --- 1. Estado do Jogo (Variáveis) ---
     let playerHP = 100;
     let playerMP = 100;
 
+    // --- 2. Dados das Cenas (O "Roteiro") ---
     const storyData = {
         start: {
             speaker: "O GUARDIÃO",
-            text: "'O conhecimento exige sacrifício', sussurra a criatura de névoa. 'Como você passará?'",
-            bgImage: "image_11.png",
+            text: "'O conhecimento exige sacrifício', sussurra a criatura de névoa, bloqueando a porta. 'Como você passará?'",
+            bgImage: "image_11.png", 
             options: [
                 { text: "Pela força! (Gasta 30 MP)", action: () => changeScene('fight', 0, -30) },
                 { text: "Eu não pertenço a este lugar. (Fugir)", action: () => changeScene('run', 0, 0) },
@@ -245,25 +49,26 @@
         },
         fight: { 
             speaker: "SISTEMA",
-            text: "O brilho da sua magia consome as sombras! Você venceu. O caminho para os segredos da cripta está aberto.", 
+            text: "O brilho da sua magia consome as sombras! Você venceu, mas o esforço foi grande. O caminho para os segredos da cripta está aberto.", 
             bgImage: "bg_elara_victory_clean.png", 
             options: [] 
         },
         run: { 
             speaker: "SISTEMA",
-            text: "O ar puro do exterior queima seus pulmões. Você sobreviveu, mas o destino do mundo continua selado.", 
+            text: "O ar puro do exterior queima seus pulmões. Você sobreviveu, mas o selo permanece intacto e o destino do mundo continua selado.", 
             bgImage: "bg_elara_retreat_clean.png", 
             options: [] 
         },
         surrender: { 
             speaker: "SISTEMA",
-            text: "As correntes de névoa prendem seus pulsos. Sua jornada termina na frieza desta prisão.", 
+            text: "As correntes de névoa prendem seus pulsos e a escuridão toma conta. Sua jornada termina na frieza desta prisão.", 
             bgImage: "bg_elara_capture_clean.png", 
             options: [] 
         }
     };
 
-    // MUDANÇA: Função para resetar o jogo sem recarregar a página
+    // --- 3. Lógica do Jogo (Funções) ---
+
     function resetGame() {
         playerHP = 100;
         playerMP = 100;
@@ -271,11 +76,10 @@
         document.getElementById('hp').innerText = playerHP;
         document.getElementById('mp').innerText = playerMP;
         
-        // Esconde tudo antes de recomeçar
         document.getElementById('options-container').classList.add('hidden');
         document.getElementById('dialogue-container').classList.add('hidden');
         
-        // Vai direto para o início de forma suave
+        // Vai direto para o início
         renderScene('start');
     }
 
@@ -294,34 +98,35 @@
         const scene = storyData[sceneKey];
         const bgElement = document.getElementById('background');
         const dialogueBox = document.getElementById('dialogue-container');
+        const optContainer = document.getElementById('options-container');
         
-        // Oculta o diálogo durante a transição
+        // 1. Oculta tudo durante a transição
         dialogueBox.classList.add('hidden');
+        optContainer.classList.add('hidden');
         
-        // Inicia o fade out da imagem atual (se houver)
+        // 2. Inicia o fade out da imagem
         bgElement.classList.remove('fade-in');
         bgElement.classList.add('fade-out');
         
         setTimeout(() => {
-            // Troca a imagem enquanto está invisível (preto)
+            // 3. Troca a imagem
             if (scene.bgImage) {
                 bgElement.src = scene.bgImage;
             }
             
-            // Inicia o fade in da nova imagem
+            // 4. Inicia o fade in da imagem
             bgElement.classList.remove('fade-out');
             bgElement.classList.add('fade-in');
 
-            // Atualiza os textos
+            // 5. Atualiza os textos
             document.getElementById('speaker-name').innerText = scene.speaker;
             document.getElementById('dialogue-text').innerText = scene.text;
 
-            // Gerencia os botões
-            const optContainer = document.getElementById('options-container');
+            // 6. Configura os botões
             optContainer.innerHTML = ''; 
 
             if (scene.options.length > 0) {
-                // É uma cena de escolha (esconde diálogo, mostra botões)
+                // Cena de escolha (mostra opções, esconde diálogo)
                 scene.options.forEach(opt => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
@@ -330,31 +135,22 @@
                     optContainer.appendChild(btn);
                 });
                 optContainer.classList.remove('hidden'); 
-                
             } else {
-                // É uma tela final (mostra diálogo e botão de recomeçar)
+                // Tela final (mostra diálogo e botão de recomeçar)
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = "Fim do Protótipo - Jogar Novamente";
-                
-                // MUDANÇA: Chama a função resetGame em vez de location.reload()
                 btn.onclick = resetGame; 
-                
                 optContainer.appendChild(btn);
                 
                 optContainer.classList.remove('hidden');
-                // Mostra o diálogo final
                 dialogueBox.classList.remove('hidden');
             }
-        }, 500); // Espera 500ms (o tempo do fade-out) para trocar a imagem
+        }, 500); // Espera o fade-out terminar
     }
 
-    // --- Iniciar Jogo ---
+    // --- 4. Iniciar Jogo ---
     window.onload = () => {
-        // Garante que o jogo comece zerado e suave
         resetGame();
     };
 </script>
-
-</body>
-</html>
