@@ -2,207 +2,317 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Fantásticos Games - O Selo de Elara (Protótipo Responsivo)</title>
+    <title>Fantásticos Games - O Selo de Elara</title>
     <style>
-        /* Define a estrutura responsiva do contêiner */
-        body { background: #1a1a1a; color: #e0e0e0; font-family: 'Georgia', serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        
-        #game-container { 
-            /* O segredo da responsividade: use porcentagens com um max-width */
-            width: 80%; 
-            max-width: 1200px; 
-            height: 80vh; 
-            background: #000; 
-            border: 4px solid #444; 
-            position: relative; 
-            overflow: hidden; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+        body {
+            background-color: #0d0d1a; /* Fundo escuro para a página */
+            color: #e0e0e0;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Evita rolagem na página */
         }
-        
-        #stats { 
-            position: absolute; 
-            top: 10px; 
-            left: 10px; 
-            font-size: 1.2rem; /* Use 'rem' para escalonamento de fonte */
-            z-index: 10; 
-            background: rgba(0,0,0,0.7); 
-            padding: 8px 20px; 
-            border-radius: 5px; 
-            border: 1px solid #c9a55c; 
-        }
-        
-        #background { 
-            /* O fundo agora escala com o contêiner */
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            opacity: 1; 
-            transition: opacity 0.5s; 
-        }
-        
-        /* Estilo Dinâmico do Balão de Diálogo (não estático na imagem) */
-        #dialogue-box { 
-            position: absolute; 
-            bottom: 10px; 
-            left: 10px; 
-            right: 10px; 
-            background: rgba(15, 15, 25, 0.9); /* Azul escuro translúcido */
-            border: 2px solid #c9a55c; /* Borda dourada */
-            border-radius: 8px;
-            padding: 1.5rem; 
-            min-height: 120px;
-            z-index: 5;
+
+        #game-container {
+            width: 80%;
+            max-width: 1024px;
+            height: 80vh;
+            max-height: 768px;
+            background-color: #000;
+            border: 4px solid #333;
+            border-radius: 8px; /* Bordas arredondadas suaves */
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centraliza o texto verticalmente */
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            overflow: hidden; /* Mantém o conteúdo dentro do contêiner */
         }
 
-        #name-tag { 
-            position: absolute; 
-            top: -10px; 
-            left: 15px; 
-            background: #c9a55c; 
-            color: #1a1a1a; 
-            padding: 2px 15px; 
-            font-weight: bold; 
+        /* Área da Imagem de Fundo */
+        #scene-container {
+            flex-grow: 1; /* Ocupa o máximo de espaço possível */
+            position: relative;
+            overflow: hidden;
+        }
+
+        #background {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* A imagem cobre a área, cortando o excesso */
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            display: block;
+        }
+
+        /* Efeito de transição de tela preta */
+        .fade-out {
+            opacity: 0 !important;
+        }
+
+        /* Status Bar no topo da tela */
+        #stats-bar {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(10, 10, 15, 0.85);
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #c9a55c;
             font-size: 1.1rem;
-            border-radius: 3px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            z-index: 10;
+            display: flex;
+            gap: 20px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        }
+        .stat-value { font-weight: bold; color: #fff; }
+
+        /* Contêiner de Opções (Centralizado) */
+        #options-container {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 80%;
+            max-width: 450px;
+            z-index: 20;
         }
 
-        #text { 
-            font-size: 1.3rem; 
-            line-height: 1.6; 
-            color: #f0f0f0;
+        .option-btn {
+            background: rgba(25, 25, 35, 0.95);
+            color: #d4af37; /* Dourado suave */
+            border: 2px solid #8b7355;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-size: 1.1rem;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             text-shadow: 1px 1px 2px #000;
         }
 
-        /* Ajuste dos botões de escolha */
-        #options { 
-            display: flex; 
-            gap: 10px; 
-            position: absolute; 
-            top: 40%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            flex-direction: column; 
-            width: 300px; 
-            z-index: 20; 
+        .option-btn:hover {
+            background: #d4af37;
+            color: #1a1a1a;
+            border-color: #f0e6d2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            text-shadow: none;
         }
-        
-        button { 
-            background: rgba(34, 34, 34, 0.9); 
-            color: #c9a55c; 
-            border: 2px solid #c9a55c; 
-            padding: 12px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            font-family: 'Georgia', serif; 
-            font-size: 1.1rem; 
-            font-weight: bold; 
+
+        /* Caixa de Diálogo Inferior */
+        #dialogue-container {
+            height: 25%; /* Altura fixa para a caixa de diálogo */
+            min-height: 150px;
+            background: rgba(15, 15, 20, 0.95);
+            border-top: 3px solid #8b7355;
+            position: relative;
+            padding: 25px 30px 15px 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
         }
-        
-        button:hover { 
-            background: #c9a55c; 
-            color: #000; 
+
+        #speaker-name {
+            position: absolute;
+            top: -18px;
+            left: 30px;
+            background: #8b7355;
+            color: #f0e6d2;
+            padding: 4px 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            border: 2px solid #5c4b37;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        
+
+        #dialogue-text {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            color: #e8e8e8;
+            text-shadow: 1px 1px 2px #000;
+            flex-grow: 1; /* Ocupa o espaço disponível */
+        }
+
+        /* Classe utilitária para esconder elementos */
         .hidden { display: none !important; }
-        
-        /* Media Query para telas menores */
-        @media (max-width: 600px) {
-            #game-container { width: 100%; height: 60vh; border-width: 2px; }
-            #options { width: 90%; }
-            #text { font-size: 1.1rem; }
+
+        /* Media Queries para telas menores (smartphones) */
+        @media (max-width: 768px) {
+            #game-container { width: 95%; height: 90vh; }
+            #dialogue-container { height: 30%; min-height: 180px; padding: 20px 15px 15px 15px; }
+            #speaker-name { font-size: 1rem; top: -14px; left: 15px; }
+            #dialogue-text { font-size: 1.1rem; }
+            .option-btn { font-size: 1rem; padding: 12px; }
+            #options-container { width: 90%; }
+            #stats { font-size: 1rem; padding: 6px 12px; }
         }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="stats">❤️ HP: <span id="hp">100</span> | ✨ MP: <span id="mp">100</span></div>
     
-    <img id="background" src="bg_elara_guardian_clean.png" alt="Encontro com o Guardião">
-    
-    <div id="options" class="hidden"></div>
-
-    <div id="dialogue-box">
-        <div id="name-tag">ELARA</div>
-        <div id="text">O selo exige um catalisador... Qual será o preço da verdade?</div>
+    <div id="stats-bar">
+        <span>❤️ HP: <span id="hp" class="stat-value">100</span></span>
+        <span>✨ MP: <span id="mp" class="stat-value">100</span></span>
     </div>
+    
+    <div id="scene-container">
+        <img id="background" src="image_11.png" alt="Cenário">
+    </div>
+    
+    <div id="options-container" class="hidden"></div>
+
+    <div id="dialogue-container">
+        <div id="speaker-name">ELARA</div>
+        <div id="dialogue-text">O selo exige um catalisador... Qual será o preço da verdade?</div>
+    </div>
+
 </div>
 
 <script>
-    let hp = 100;
-    let mp = 100;
+    // --- 1. Estado do Jogo (Variáveis) ---
+    let playerHP = 100;
+    let playerMP = 100;
 
-    const gameData = {
+    // --- 2. Dados das Cenas (O "Roteiro") ---
+    // Aqui definimos o texto, a imagem de fundo e as escolhas de cada momento.
+    const storyData = {
         start: {
-            text: "O Guardião das Sombras bloqueia o caminho. 'O conhecimento exige sacrifício', sussurra. O que você escolhe?",
+            speaker: "O GUARDIÃO",
+            text: "'O conhecimento exige sacrifício', sussurra a criatura de névoa, bloqueando a porta. 'Como você passará?'",
+            bgImage: "image_11.png", // Imagem do encontro inicial
             options: [
-                { text: "Pela força! (Gasta 30 MP)", action: () => updateStats(0, -30, 'fight') },
-                { text: "Fugir deste lugar", action: () => updateStats(0, 0, 'run') },
-                { text: "Não reagir...", action: () => updateStats(-100, 0, 'surrender') }
+                { 
+                    text: "Pela força! (Gasta 30 MP)", 
+                    action: () => changeScene('fight', 0, -30) 
+                },
+                { 
+                    text: "Eu não pertenço a este lugar. (Fugir)", 
+                    action: () => changeScene('run', 0, 0) 
+                },
+                { 
+                    text: "Não sei se estou pronta... (Hesitar)", 
+                    action: () => changeScene('surrender', -100, 0) 
+                }
             ]
         },
-        // Estas cenas abaixo ainda não têm assets visuais específicos,
-        // mas o motor e o fundo limpo já funcionam.
-        fight: { text: "O brilho da sua magia consome as sombras! Você venceu, mas está exausta.", options: [] },
-        run: { text: "Você sobreviveu, mas o segredo continua enterrado. O mundo sentirá sua covardia.", options: [] },
-        surrender: { text: "As correntes de névoa prendem seus pulsos. Sua jornada termina na escuridão.", options: [] }
+        
+        fight: { 
+            speaker: "SISTEMA",
+            text: "O brilho da sua magia consome as sombras! Você venceu, mas o esforço foi grande. O caminho para os segredos da cripta está aberto.", 
+            bgImage: "bg_elara_victory_clean.png", // IMAGEM: Vitória (Fundo Limpo)
+            options: [] // Sem opções = Fim de jogo
+        },
+        
+        run: { 
+            speaker: "SISTEMA",
+            text: "O ar puro do exterior queima seus pulmões. Você sobreviveu, mas o selo permanece intacto e o destino do mundo continua selado.", 
+            bgImage: "bg_elara_retreat_clean.png", // IMAGEM: Fuga (Fundo Limpo)
+            options: [] 
+        },
+        
+        surrender: { 
+            speaker: "SISTEMA",
+            text: "As correntes de névoa prendem seus pulsos e a escuridão toma conta. Sua jornada termina na frieza desta prisão.", 
+            bgImage: "bg_elara_capture_clean.png", // IMAGEM: Captura (Fundo Limpo)
+            options: [] 
+        }
     };
 
-    function updateStats(hpChange, mpChange, nextScene) {
-        hp += hpChange;
-        mp += mpChange;
-        document.getElementById('hp').innerText = hp;
-        document.getElementById('mp').innerText = mp;
+    // --- 3. Lógica do Jogo (Funções) ---
+
+    // Função para atualizar os atributos (HP/MP) e avançar a cena
+    function changeScene(sceneKey, hpChange, mpChange) {
+        // Atualiza atributos
+        playerHP += hpChange;
+        playerMP += mpChange;
         
-        document.getElementById('options').classList.add('hidden');
-        renderScene(nextScene);
+        // Garante que não passem de limites (ex: HP não fica negativo no visual)
+        if (playerHP < 0) playerHP = 0;
+        
+        // Atualiza a tela com os novos valores
+        document.getElementById('hp').innerText = playerHP;
+        document.getElementById('mp').innerText = playerMP;
+        
+        // Renderiza a nova cena
+        renderScene(sceneKey);
     }
 
+    // Função principal que desenha a tela com base nos dados da cena
     function renderScene(sceneKey) {
-        const scene = gameData[sceneKey];
+        const scene = storyData[sceneKey];
+        const bgElement = document.getElementById('background');
         
-        // Troca de fundo dinâmica (simulando a troca de sprites no Ren'Py)
-        // No momento, todas as cenas finais usam o mesmo fundo limpo.
-        document.getElementById('text').innerText = scene.text;
+        // 1. Efeito de transição de imagem (Fade In/Out suave)
+        bgElement.classList.add('fade-out'); // Inicia o fade out
+        
+        setTimeout(() => {
+            // Após meio segundo (tempo do fade-out), troca a imagem
+            if (scene.bgImage) {
+                bgElement.src = scene.bgImage;
+            }
+            bgElement.classList.remove('fade-out'); // Inicia o fade in
+        }, 500); // 500ms = 0.5 segundos
 
-        // Se houver opções, exibe-as no menu central e esconde o diálogo
+        // 2. Atualiza os Textos
+        document.getElementById('speaker-name').innerText = scene.speaker;
+        document.getElementById('dialogue-text').innerText = scene.text;
+
+        // 3. Atualiza os Botões
+        const optContainer = document.getElementById('options-container');
+        const dialogueBox = document.getElementById('dialogue-container');
+        optContainer.innerHTML = ''; // Limpa botões anteriores
+
         if (scene.options.length > 0) {
-            const optContainer = document.getElementById('options');
-            optContainer.innerHTML = ''; // Limpa botões antigos
-            
+            // Se tem opções (É uma escolha)
             scene.options.forEach(opt => {
                 const btn = document.createElement('button');
+                btn.className = 'option-btn';
                 btn.innerText = opt.text;
                 btn.onclick = opt.action;
                 optContainer.appendChild(btn);
             });
-            optContainer.classList.remove('hidden');
-            // Esconde o diálogo para as escolhas (estilo Visual Novel)
-            document.getElementById('dialogue-box').classList.add('hidden');
+            optContainer.classList.remove('hidden'); // Mostra os botões
+            dialogueBox.classList.add('hidden');     // Esconde o diálogo para focar na escolha
+            
         } else {
-            // Se não houver opções, exibe o diálogo (é uma tela final)
-            const optContainer = document.getElementById('options');
-            optContainer.innerHTML = '';
-            
+            // Se NÃO tem opções (É uma tela final de Game Over/Vitória)
             const btn = document.createElement('button');
-            btn.innerText = "Fim do Protótipo (Recarregar)";
-            btn.onclick = () => location.reload();
+            btn.className = 'option-btn';
+            btn.innerText = "Fim do Protótipo - Jogar Novamente";
+            btn.onclick = () => location.reload(); // Recarrega a página para reiniciar
             optContainer.appendChild(btn);
-            optContainer.classList.remove('hidden');
             
-            // Reexibe o diálogo para o texto final
-            document.getElementById('dialogue-box').classList.remove('hidden');
+            // Nas telas finais, mostramos tanto o texto de conclusão quanto o botão de reiniciar
+            optContainer.classList.remove('hidden');
+            dialogueBox.classList.remove('hidden');
         }
     }
 
-    // Inicializa a cena principal
-    renderScene('start');
+    // --- 4. Iniciar Jogo ---
+    // Força o carregamento da primeira cena ao iniciar
+    window.onload = () => {
+        // Ajusta a interface inicial para mostrar apenas o texto do Guardião e as opções
+        const optContainer = document.getElementById('options-container');
+        const dialogueBox = document.getElementById('dialogue-container');
+        
+        // Simula o clique inicial para mostrar a primeira cena
+        renderScene('start');
+    };
+
 </script>
 
 </body>
