@@ -19,7 +19,7 @@
             touch-action: none; 
         }
 
-        /* --- CONTÊINER PRINCIPAL --- */
+        /* --- CONTÊINER PRINCIPAL (Desktop) --- */
         #game-container {
             width: 80%;
             max-width: 1024px;
@@ -35,19 +35,27 @@
             overflow: hidden;
         }
 
-        /* --- TELA DE INÍCIO (Para liberar o áudio) --- */
+        /* --- TELA DE INÍCIO (Start Screen) --- */
         #start-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: #0d0d1a; 
             z-index: 50;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 20px; 
+        }
+
+        #studio-logo {
+            max-width: 250px; 
+            height: auto;
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
         }
 
         #start-screen h1 {
@@ -55,7 +63,8 @@
             text-shadow: 2px 2px 4px #000;
             font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 30px;
+            margin: 0; 
+            font-family: 'Cinzel', 'Georgia', serif; 
         }
 
         /* --- IMAGEM DE FUNDO --- */
@@ -188,7 +197,10 @@
                 border: none; 
                 border-radius: 0; 
             }
+            
+            #studio-logo { max-width: 200px; } 
             #start-screen h1 { font-size: 1.8rem; padding: 0 20px; }
+            
             #dialogue-container { bottom: 10px; width: 95%; padding: 20px 15px 15px 15px; height: auto; }
             #speaker-name { font-size: 1rem; top: -15px; left: 15px; }
             #dialogue-text { font-size: 1rem; line-height: 1.4; }
@@ -199,6 +211,7 @@
 
         @media (max-width: 375px) {
              #dialogue-text { font-size: 0.9rem; }
+             #studio-logo { max-width: 160px; } 
         }
     </style>
 </head>
@@ -207,6 +220,7 @@
 <div id="game-container">
     
     <div id="start-screen">
+        <img id="studio-logo" src="logo-fantasticos-games.png" alt="Logo Fantásticos Games">
         <h1>O Selo de Elara</h1>
         <button class="option-btn" id="start-btn">Iniciar Aventura</button>
     </div>
@@ -236,10 +250,11 @@
 <script>
     // --- 0. Pré-carregamento de Imagens ---
     const imagesToPreload = [
-        "image_11.png",
+        "image_11.png", // Imagem do encontro com o guardião
         "bg_elara_victory_clean.png",
         "bg_elara_capture_clean.png",
-        "bg_elara_retreat_clean.png"
+        "bg_elara_retreat_clean.png",
+        "logo-fantasticos-games.png" // CORREÇÃO: Extensão alterada para .png no preloading
     ];
 
     function preloadImages(array) {
@@ -258,12 +273,14 @@
     let playerMP = 100;
     const bgmPlayer = document.getElementById('bgm-player');
 
-    // --- 2. Dados das Cenas ---
+    // --- 2. Dados das Cenas (O Roteiro) ---
+    // NOTA IMPORTANTÍSSIMA: Você mencionou que a imagem inicial agora é a "bg_elara_guardian_clean.png"
+    // Atualizei o 'bgImage' na cena 'start' para refletir isso.
     const storyData = {
         start: {
             speaker: "O GUARDIÃO",
             text: "'O conhecimento exige sacrifício', sussurra a criatura de névoa, bloqueando a porta. 'Como você passará?'",
-            bgImage: "image_11.png", 
+            bgImage: "bg_elara_guardian_clean.png", // ATUALIZADO para a imagem limpa que você pediu antes
             options: [
                 { text: "Pela força! (Gasta 30 MP)", action: () => changeScene('fight', 0, -30) },
                 { text: "Eu não pertenço a este lugar. (Fugir)", action: () => changeScene('run', 0, 0) },
@@ -292,13 +309,11 @@
 
     // --- 3. Lógica do Jogo ---
 
-    // Ação do Botão "Iniciar Aventura"
     document.getElementById('start-btn').addEventListener('click', () => {
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('stats-bar').classList.remove('hidden');
         
-        // Tenta tocar a música (o .catch previne erros no console caso o navegador ainda bloqueie)
-        bgmPlayer.play().catch(error => console.log("Áudio bloqueado pelo navegador:", error));
+        bgmPlayer.play().catch(error => console.log("Áudio bloqueado:", error));
         
         resetGame();
     });
@@ -363,8 +378,20 @@
             } else {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = "Fim do Protótipo - Jogar Novamente";
-                btn.onclick = resetGame; 
+                btn.innerText = "Fim do Protótipo - Voltar ao Menu";
+                btn.onclick = () => {
+                    bgmPlayer.pause();
+                    bgmPlayer.currentTime = 0;
+                    
+                    document.getElementById('stats-bar').classList.add('hidden');
+                    optContainer.classList.add('hidden');
+                    dialogueBox.classList.add('hidden');
+                    
+                    bgElement.classList.remove('fade-in');
+                    bgElement.classList.add('fade-out');
+                    
+                    document.getElementById('start-screen').classList.remove('hidden');
+                }; 
                 optContainer.appendChild(btn);
                 
                 optContainer.classList.remove('hidden');
@@ -372,6 +399,7 @@
             }
         }, 500);
     }
+
 </script>
 
 </body>
