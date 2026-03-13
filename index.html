@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Fantásticos Games - O Selo de Elara (Protótipo Interativo)</title>
+    <style>
+        body { background: #1a1a1a; color: #e0e0e0; font-family: 'Georgia', serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #game-container { width: 1024px; height: 768px; background: #000; border: 4px solid #444; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #stats { position: absolute; top: 10px; left: 10px; font-size: 16px; z-index: 10; background: rgba(0,0,0,0.7); padding: 8px 20px; border-radius: 5px; border: 1px solid #c9a55c; }
+        
+        /* O fundo agora é trocado pelo JavaScript */
+        #background { width: 100%; height: 100%; object-fit: cover; opacity: 1; transition: opacity 0.5s; }
+        
+        #options { display: flex; gap: 10px; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); flex-direction: column; width: 400px; z-index: 20; }
+        
+        button { background: rgba(34, 34, 34, 0.9); color: #c9a55c; border: 2px solid #c9a55c; padding: 15px; cursor: pointer; transition: 0.3s; font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; }
+        button:hover { background: #c9a55c; color: #000; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="stats">❤️ HP: <span id="hp">100</span> | ✨ MP: <span id="mp">100</span></div>
+    
+    <img id="background" src="image_11.png" alt="Encontro com o Guardião">
+    
+    <div id="options" class="hidden"></div>
+</div>
+
+<script>
+    let hp = 100;
+    let mp = 100;
+
+    const gameData = {
+        start: {
+            text: "O Guardião das Sombras bloqueia o caminho. 'O conhecimento exige sacrifício', sussurra. O que você escolhe?",
+            // Linkando a imagem de fundo que geramos para este momento: image_11.png
+            bg: "image_11.png",
+            options: [
+                { text: "Pela força! (Gasta 30 MP)", action: () => updateStats(0, -30, 'fight') },
+                { text: "Fugir deste lugar", action: () => updateStats(0, 0, 'run') },
+                { text: "Não reagir...", action: () => updateStats(-100, 0, 'surrender') }
+            ]
+        },
+        // Estas cenas abaixo ainda precisam de assets visuais específicos,
+        // mas o motor já funciona.
+        fight: { text: "O brilho da sua magia consome as sombras! Você venceu, mas está exausta.", bg: "image_11.png", options: [] },
+        run: { text: "Você sobreviveu, mas o segredo continua enterrado. O mundo sentirá sua covardia.", bg: "image_11.png", options: [] },
+        surrender: { text: "As correntes de névoa prendem seus pulsos. Sua jornada termina na escuridão.", bg: "image_11.png", options: [] }
+    };
+
+    function updateStats(hpChange, mpChange, nextScene) {
+        hp += hpChange;
+        mp += mpChange;
+        document.getElementById('hp').innerText = hp;
+        document.getElementById('mp').innerText = mp;
+        
+        document.getElementById('options').classList.add('hidden');
+        renderScene(nextScene);
+    }
+
+    function renderScene(sceneKey) {
+        const scene = gameData[sceneKey];
+        
+        // Troca de fundo dinâmica (simulando a troca de sprites no Ren'Py)
+        if (scene.bg) {
+            document.getElementById('background').src = scene.bg;
+        }
+
+        // Se houver opções, exibe-as no menu central
+        if (scene.options.length > 0) {
+            const optContainer = document.getElementById('options');
+            optContainer.innerHTML = ''; // Limpa botões antigos
+            
+            scene.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt.text;
+                btn.onclick = opt.action;
+                optContainer.appendChild(btn);
+            });
+            optContainer.classList.remove('hidden');
+        } else {
+            // Se não houver opções, é uma tela final (Vitória ou Derrota)
+            const optContainer = document.getElementById('options');
+            optContainer.innerHTML = '';
+            
+            const btn = document.createElement('button');
+            btn.innerText = "Fim do Protótipo (Recarregar)";
+            btn.onclick = () => location.reload();
+            optContainer.appendChild(btn);
+            optContainer.classList.remove('hidden');
+        }
+    }
+
+    // Inicializa a cena principal
+    renderScene('start');
+</script>
+
+</body>
+</html>
