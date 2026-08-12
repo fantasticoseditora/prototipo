@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jornada dos 90 Dias — Escrita | Teste</title>
+  <meta name="description" content="Descubra sua rota personalizada para avançar e concluir seu livro nos próximos 90 dias." />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <div class="brand">
+      <div class="brand-lockup">
+        <img class="brand-logo" src="logo.svg" alt="Logo da Editora Fantásticos">
+        <div class="brand-mark">Editora <span>Fantásticos</span></div>
+      </div>
+      <div class="tag">Modo teste · checkout R$ 0,01</div>
+    </div>
+
+    <section id="screen-lead" class="card">
+      <div class="eyebrow">Jornada dos 90 Dias · Escrita</div>
+      <h1>Seu livro não precisa continuar parado.</h1>
+      <p class="lead">Responda algumas perguntas sobre sua obra, sua rotina e seus obstáculos. Ao final, você recebe um diagnóstico gratuito com primeiras ações e descobre se uma Jornada de 90 dias é viável para o seu caso.</p>
+
+      <div class="hero-points">
+        <div class="mini"><b>Diagnóstico imediato</b><span class="muted">Sem IA e sem espera.</span></div>
+        <div class="mini"><b>Primeiras ações</b><span class="muted">Você já sai sabendo por onde começar.</span></div>
+        <div class="mini"><b>Plano completo opcional</b><span class="muted">Sua Jornada personalizada por R$ 59,90.</span></div>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <label for="lead-name">Seu primeiro nome</label>
+          <input id="lead-name" autocomplete="given-name" placeholder="Seu primeiro nome" />
+        </div>
+        <div class="field">
+          <label for="lead-email">Seu e-mail</label>
+          <input id="lead-email" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" />
+          <div id="email-validation" class="validation"></div>
+        </div>
+        <div class="field">
+          <label for="lead-whatsapp">Seu WhatsApp</label>
+          <input id="lead-whatsapp" inputmode="tel" autocomplete="tel" placeholder="(47) 99999-9999" />
+          <div id="whatsapp-validation" class="validation"></div>
+          <div class="field-note">Nesta versão validamos formato e DDD. A existência real do e-mail/WhatsApp exige confirmação externa no fluxo publicado.</div>
+        </div>
+        <label class="consent">
+          <input id="lead-consent" type="checkbox" />
+          <span>Concordo com o uso destes dados para salvar meu diagnóstico e receber comunicações relacionadas à Jornada dos 90 Dias. Sem grupos e sem mensagens excessivas.</span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <span class="fine">Seu progresso ficará salvo neste dispositivo durante este protótipo.</span>
+        <button class="btn btn-primary" id="start-btn">COMEÇAR MINHA JORNADA</button>
+      </div>
+    </section>
+
+    <section id="screen-question" class="card hidden">
+      <div class="topline">
+        <div>
+          <div class="eyebrow">Seu diagnóstico está sendo construído</div>
+          <div class="counter" id="counter">Pergunta 1 de 18</div>
+        </div>
+        <button class="btn btn-link reset" id="reset-btn-q">Recomeçar</button>
+      </div>
+      <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+      <h2 class="question-title" id="question-title"></h2>
+      <div class="helper" id="question-helper"></div>
+      <div id="question-body"></div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="prev-btn">VOLTAR</button>
+        <button class="btn btn-primary" id="next-btn">CONTINUAR</button>
+      </div>
+    </section>
+
+    <section id="screen-result" class="card hidden">
+      <div class="topline">
+        <div>
+          <div class="eyebrow">Seu diagnóstico gratuito</div>
+          <h2 id="result-title">Seu perfil de escrita</h2>
+        </div>
+        <button class="btn btn-link reset" id="reset-btn-r">Recomeçar</button>
+      </div>
+      <p class="lead" id="result-intro"></p>
+      <div class="results-grid" id="results-grid"></div>
+      <div class="viability" id="viability-box"></div>
+
+      <div style="margin-top:30px">
+        <button class="btn btn-primary" id="journey-btn" style="width:100%; font-size:1.05rem">QUERO MINHA JORNADA DE 90 DIAS</button>
+      </div>
+    </section>
+
+    <section id="screen-sales" class="card hidden">
+      <div class="sales-hero">
+        <div class="screen-kicker"><span class="dot"></span>Sua Jornada personalizada</div>
+        <h2 id="sales-headline">Seu diagnóstico mostrou onde você está. Agora falta saber exatamente como avançar.</h2>
+        <p>O próximo passo é transformar as suas respostas em uma rota individual de 90 dias — adequada ao estágio do livro, à sua rotina e aos obstáculos que apareceram no diagnóstico.</p>
+      </div>
+
+      <div class="sales-copy" id="sales-copy"></div>
+
+      <div class="benefit-head"><span>✦</span> O que você receberá na sua Jornada</div>
+      <div class="deliverables">
+        <div class="deliverable"><div class="deliverable-icon">01</div><div><b>Seu ponto de partida</b><span class="muted">Onde sua obra está e o que precisa acontecer primeiro.</span></div></div>
+        <div class="deliverable"><div class="deliverable-icon">02</div><div><b>Rota dos 90 dias</b><span class="muted">Fases, prioridades e sequência de execução.</span></div></div>
+        <div class="deliverable"><div class="deliverable-icon">03</div><div><b>Marcos semanais</b><span class="muted">Objetivos compatíveis com sua rotina real.</span></div></div>
+        <div class="deliverable"><div class="deliverable-icon">04</div><div><b>Checkpoints 30/60/90</b><span class="muted">Como verificar se a Jornada está no caminho certo.</span></div></div>
+        <div class="deliverable"><div class="deliverable-icon">05</div><div><b>Estratégia para seu gargalo</b><span class="muted">Ações específicas para o que hoje mais atrasa sua escrita.</span></div></div>
+        <div class="deliverable"><div class="deliverable-icon">06</div><div><b>Plano de recuperação</b><span class="muted">O que fazer quando uma semana não sair como esperado.</span></div></div>
+      </div>
+
+      <div class="mini" style="margin-top:22px;border-color:rgba(240,207,143,.35);background:rgba(240,207,143,.07)">
+        <b>Teste de checkout</b>
+        <span class="muted">Nesta versão, o botão abaixo abre uma cobrança de teste de R$ 0,01 no Mercado Pago. O objetivo é validar o redirecionamento e o comportamento após a aprovação.</span>
+      </div>
+
+      <div class="price-box">
+        <div class="price-line">
+          <div>
+            <div class="muted">Jornada dos 90 Dias — Escrita</div>
+            <div class="price">R$ 0,01</div>
+          </div>
+          <div class="price-badge">Pagamento único</div>
+        </div>
+        <div class="muted">Cobrança simbólica exclusivamente para validar o checkout. O preço comercial continua sendo R$ 59,90.</div>
+        <button class="btn btn-primary" id="checkout-btn" style="width:100%; margin-top:18px">QUERO RECEBER MINHA JORNADA</button>
+        <p class="fine" style="margin:12px 0 0">Ao continuar, você será direcionado ao Mercado Pago para concluir o pagamento com segurança.</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-secondary" id="back-result-btn">VOLTAR AO DIAGNÓSTICO</button>
+        <button class="btn btn-link reset" id="reset-btn-s">Recomeçar</button>
+      </div>
+    </section>
+
+    <section id="screen-checkout" class="card hidden">
+      <div class="eyebrow">Checkout</div>
+      <h2>Você será direcionado ao Mercado Pago.</h2>
+      <p class="lead">Após a confirmação da compra, o próximo passo será integrar uma página de confirmação da Fantásticos, o e-mail imediato de segurança e, quando aplicável, o envio do manuscrito.</p>
+      <div class="mini" style="margin-top:20px">
+        <b>Fluxo previsto</b>
+        <span class="muted">Mercado Pago → compra confirmada → e-mail Fantásticos → manuscrito (se houver) → geração do plano → PDF por e-mail.</span>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="back-sales-btn">VOLTAR</button>
+        <button class="btn btn-primary" id="restart-final-btn">TESTAR OUTRO PERFIL</button>
+      </div>
+    </section>
+
+    <footer>Jornada dos 90 Dias — Editora Fantásticos · Checkout de teste</footer>
+  </main>
+
+<script src="data.js"></script>
+<script src="form.js"></script>
+<script src="engine.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
