@@ -125,7 +125,12 @@
         </div>
         <div class="muted">Cobrança simbólica exclusivamente para validar o checkout. O preço comercial continua sendo R$ 59,90.</div>
         <button class="btn btn-primary" id="checkout-btn" style="width:100%; margin-top:18px">QUERO RECEBER MINHA JORNADA</button>
-        <p class="fine" style="margin:12px 0 0">Ao continuar, você será direcionado ao Mercado Pago para concluir o pagamento com segurança.</p>
+        <p class="fine" style="margin:12px 0 0">O Mercado Pago abrirá em uma nova guia. Mantenha esta página da Jornada aberta.</p>
+      </div>
+
+      <div id="payment-waiting-box" class="mini" hidden style="margin-top:16px;border-color:rgba(158,214,163,.32);background:rgba(158,214,163,.06)">
+        <b>Checkout aberto em outra guia</b>
+        <span class="muted">Mantenha esta página aberta. Nesta etapa do teste, ela ainda não consegue confirmar o pagamento sozinha. A próxima integração fará esta tela reconhecer automaticamente quando o Mercado Pago aprovar a compra.</span>
       </div>
 
       <div class="actions">
@@ -155,5 +160,6 @@
 <script src="form.js"></script>
 <script src="engine.js"></script>
 <script src="ui.js"></script>
+<script src="checkout-test.js"></script>
 </body>
 </html>
